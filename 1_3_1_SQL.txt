@@ -1,0 +1,55 @@
+-- OPDRACHT 1.3.1
+-- Analyse: Welke rol hebben de seizoenen (lente, zomer, herfst, winter)
+--          op het aantal Treasurehunts?
+--
+-- Datavraag:
+-- Genereer een dataset met het gemiddeld aantal uitgevoerde Treasurehunts
+-- per seizoen (lente, zomer, herfst, winter) over de jaren heen.
+-- Een Treasurehunt = een distinct combinatie (hunter_id, treasure_id, session_start)
+-- in de tabel treasure_log.
+--
+-- We gebruiken:
+--  - treasure_log.log_time     als tijdstip van de hunt
+--  - treasure_log.session_start om hunts uniek te tellen per sessie
+
+-- 1) Resultaat naar tekstbestand in je Data_Warehousing-map
+\o 'C:/Users/noaro/KDG/databanken2/Data_Warehousing/1_3/1_3_1_SQL_result.txt'
+
+-- 2) Aantal hunts per jaar en seizoen
+WITH hunts_per_year_season AS (
+    SELECT
+        EXTRACT(YEAR FROM tl.log_time)::int AS year,
+        CASE
+            WHEN EXTRACT(MONTH FROM tl.log_time) IN (3,4,5)   THEN 'lente'
+            WHEN EXTRACT(MONTH FROM tl.log_time) IN (6,7,8)   THEN 'zomer'
+            WHEN EXTRACT(MONTH FROM tl.log_time) IN (9,10,11) THEN 'herfst'
+            ELSE 'winter'  -- maanden 12,1,2
+        END AS season,
+        COUNT(DISTINCT (tl.hunter_id, tl.treasure_id, tl.session_start)) AS hunts_in_season
+    FROM treasure_log tl
+    GROUP BY
+        EXTRACT(YEAR FROM tl.log_time),
+        CASE
+            WHEN EXTRACT(MONTH FROM tl.log_time) IN (3,4,5)   THEN 'lente'
+            WHEN EXTRACT(MONTH FROM tl.log_time) IN (6,7,8)   THEN 'zomer'
+            WHEN EXTRACT(MONTH FROM tl.log_time) IN (9,10,11) THEN 'herfst'
+            ELSE 'winter'
+        END
+)
+
+-- 3) Gemiddeld aantal hunts per seizoen over alle jaren
+SELECT
+    season,
+    AVG(hunts_in_season)::numeric(10,2) AS avg_treasurehunts
+FROM hunts_per_year_season
+GROUP BY season
+ORDER BY
+    CASE season
+        WHEN 'lente' THEN 1
+        WHEN 'zomer' THEN 2
+        WHEN 'herfst' THEN 3
+        WHEN 'winter' THEN 4
+    END;
+
+-- 4) Output terug naar standaard (console)
+\o
