@@ -1,0 +1,46 @@
+-- OPDRACHT 1.3.2
+-- Analyse: Doen ervaren gebruikers (die al veel Treasurehunts gedaan hebben)
+--          sneller over een Treasurehunt dan minder ervaren gebruikers?
+--
+-- Datavraag:
+-- Genereer een dataset met per gebruiker:
+--  - het totaal aantal uitgevoerde Treasurehunts
+--  - de gemiddelde duur (in minuten) van een Treasurehunt.
+-- Op basis van deze dataset kan men gebruikers indelen in categorieën
+-- (beginners / ervaren) en de gemiddelde duur vergelijken.
+--
+-- We gebruiken:
+--  - treasure_log.session_start = starttijd van de hunt
+--  - treasure_log.log_time      = eindtijd van de hunt
+-- Duur = log_time - session_start (in minuten).
+-- Eén hunt = distinct (hunter_id, treasure_id, session_start).
+
+-- 1) Resultaat naar tekstbestand
+\o 'C:/Users/noaro/KDG/databanken2/Data_Warehousing/1_3/1_3_2_SQL_result.txt'
+
+-- 2) Per gebruiker: aantal hunts en gemiddelde duur
+WITH user_hunts AS (
+    SELECT
+        tl.hunter_id,
+        COUNT(DISTINCT (tl.hunter_id, tl.treasure_id, tl.session_start)) AS hunt_count,
+        AVG(
+            EXTRACT(EPOCH FROM (tl.log_time - tl.session_start)) / 60.0
+        ) AS avg_duration_minutes
+    FROM treasure_log tl
+    GROUP BY tl.hunter_id
+)
+
+-- 3) Combineer met user_table (alleen id; voeg andere velden toe als je wil)
+SELECT
+    u.id AS user_id,
+    uh.hunt_count,
+    ROUND(uh.avg_duration_minutes::numeric, 2) AS avg_duration_minutes
+FROM user_table u
+JOIN user_hunts uh
+    ON uh.hunter_id = u.id
+ORDER BY
+    uh.hunt_count DESC,            -- meest ervaren bovenaan
+    avg_duration_minutes ASC;      -- bij gelijke ervaring: snelste bovenaan
+
+-- 4) Output terug naar standaard
+\o
