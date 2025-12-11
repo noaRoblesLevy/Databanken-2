@@ -1,0 +1,55 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20251114114051
+Username: NOOTJE\noaro
+RunAs User: NOOTJE\noaro
+Configuration Name: 
+Machine: NOOTJE (Microsoft Windows NT 10.0.26100.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+Process ID: 27892
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is 1_Setup_operational_database_log.txt
+=== Start setup operationele databank ===
+Timestamp: 11/14/2025 11:40:51
+SOURCE: C:\Users\noaro\KDG\databanken2\Data_Warehousing
+DB_NAME: catchem
+
+Zipbestand gevonden: C:\Users\noaro\KDG\databanken2\Data_Warehousing\catchem_backup.zip
+
+Uitpakken van C:\Users\noaro\KDG\databanken2\Data_Warehousing\catchem_backup.zip naar C:\Users\noaro\KDG\databanken2\Data_Warehousing ...
+Unzip klaar.
+
+SQL-bestand gevonden: C:\Users\noaro\KDG\databanken2\Data_Warehousing\catchem_backup.sql
+
+Drop databank 'catchem' indien die al bestaat...
+dropdb.exe : dropdb: error: database removal failed: ERROR:  database "catchem" does not exist
+At C:\Users\noaro\KDG\databanken2\Data_Warehousing\1_Setup_operational_database.ps1:61 char:1
++ & $DROPDB -h $DBHost -p $DBPort -U $DBUser $DBName 2>$null
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (dropdb: error: ... does not exist:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+Password:
+Dropdb uitgevoerd (OK als er een waarschuwing kwam)
+
+Maak nieuwe databank 'catchem' aan...
+
+Databank 'catchem' aangemaakt.
+
+Voer SQL-script uit in databank 'catchem'...
+
+SQL-script succesvol uitgevoerd.
+
+=== Setup operationele databank voltooid ===
+Logbestand: 1_Setup_operational_database_log.txt
+**********************
+Windows PowerShell transcript end
+End time: 20251114114202
+**********************
