@@ -1,8 +1,0 @@
- season | avg_treasurehunts 
---------+-------------------
- lente  |         112082.50
- zomer  |         112518.25
- herfst |         111747.25
- winter |         111011.50
-(4 rows)
-
